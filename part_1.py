@@ -3,6 +3,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
+from sklearn.metrics import root_mean_squared_error
 
 #Training data = TrainData.csv, ONLY 10m above ground level
 #relationship between generation and wind speed
@@ -28,8 +29,7 @@ def part_1():
     lin_reg_model.fit(train_X, train_Y)
 
     predictions = lin_reg_model.predict(test_X)
-    score = lin_reg_model.score(test_X, test_Y)
-    print(score)
+    rmse_lin_reg = root_mean_squared_error(test_Y, predictions)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
     pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_1/ForecastTemplate1-LR.csv")
@@ -39,8 +39,7 @@ def part_1():
     knn_model.fit(train_X, train_Y)
 
     predictions = knn_model.predict(test_X)
-    score = knn_model.score(test_X, test_Y)
-    print(score)
+    rmse_KNN = root_mean_squared_error(test_Y, predictions)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
     pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_1/ForecastTemplate1-kNN.csv")
@@ -51,8 +50,7 @@ def part_1():
     svr_model.fit(train_X, train_Y)
 
     predictions = svr_model.predict(test_X)
-    score = svr_model.score(test_X, test_Y)
-    print(score)
+    rmse_SVG = root_mean_squared_error(test_Y, predictions)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
     pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_1/ForecastTemplate1-SVR.csv")
@@ -63,13 +61,16 @@ def part_1():
     neural_network.fit(train_X, train_Y)
 
     predictions = neural_network.predict(test_X)
-    score = neural_network.score(test_X, test_Y)
-    print(score)
+    rmse_NN = root_mean_squared_error(test_Y, predictions)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
     pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_1/ForecastTemplate1-NN.csv")
 
     #5. use a table to compare the value of RMSE error metric among all four machine learning techniques
+    table_data = { 'Model': ['Linear Regression', 'KNN', 'SVR', 'Neural Network'],
+                   'RMSE': [rmse_lin_reg, rmse_KNN, rmse_SVG, rmse_NN] }
+    pd_table = pd.DataFrame(table_data)
+    print(pd_table)
 
     """
     6.  for each machine learning technique, please plot a figure for the whole month
