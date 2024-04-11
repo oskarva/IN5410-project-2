@@ -1,5 +1,8 @@
 from helper_functions import *
 from sklearn.linear_model import LinearRegression
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.svm import SVR
+from sklearn.neural_network import MLPRegressor
 
 #Training data = TrainData.csv, ONLY 10m above ground level
 #relationship between generation and wind speed
@@ -26,15 +29,45 @@ def part_1():
 
     predictions = lin_reg_model.predict(test_X)
     score = lin_reg_model.score(predictions, test_Y)
+    print(score)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
     pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_1/ForecastTemplate1-LR.csv")
 
     #2. KNN regression
+    knn_model = KNeighborsRegressor(n_neighbors=5)
+    knn_model.fit(train_X, train_Y)
+
+    predictions = knn_model.predict(test_X)
+    score = knn_model.score(predictions, test_Y)
+    print(score)
+
+    #Save the predictions to a .csv file, with the same timestamp as the test data
+    pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_1/ForecastTemplate1-kNN.csv")
 
     #3. SVR regression
+    #TODO: Tune hyperparameters
+    svr_model = SVR()
+    svr_model.fit(train_X, train_Y)
+
+    predictions = svr_model.predict(test_X)
+    score = svr_model.score(predictions.reshape(-1, 1), test_Y)
+    print(score)
+
+    #Save the predictions to a .csv file, with the same timestamp as the test data
+    pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_1/ForecastTemplate1-SVR.csv")
 
     #4. Neural network regression
+    #TODO: Tune hyperparameters
+    neural_network = MLPRegressor(hidden_layer_sizes=(30, 30), max_iter=1000, activation='relu')
+    neural_network.fit(train_X, train_Y)
+
+    predictions = neural_network.predict(test_X)
+    score = neural_network.score(predictions.reshape(-1, 1), test_Y)
+    print(score)
+
+    #Save the predictions to a .csv file, with the same timestamp as the test data
+    pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_1/ForecastTemplate1-NN.csv")
 
     #5. use a table to compare the value of RMSE error metric among all four machine learning techniques
 
