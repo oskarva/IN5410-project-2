@@ -26,7 +26,9 @@ def part_1():
 
     predictions = lin_reg_model.predict(test_X)
     score = lin_reg_model.score(predictions, test_Y)
-    print(score)
+
+    #Save the predictions to a .csv file, with the same timestamp as the test data
+    pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_1/ForecastTemplate1-LR.csv")
 
     #2. KNN regression
 
