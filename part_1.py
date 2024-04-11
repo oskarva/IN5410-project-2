@@ -4,6 +4,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import root_mean_squared_error
+import matplotlib.pyplot as plt
 
 #Training data = TrainData.csv, ONLY 10m above ground level
 #relationship between generation and wind speed
@@ -78,7 +79,48 @@ def part_1():
     each figure, there are two curves. One curve shows the true wind energy measurement
     and the other curve show the wind power forecasts results
     """
-    return None
+
+    # Plotting the true wind energy measurement and predicted results for each machine learning technique
+    plt.figure(figsize=(10, 6))
+
+    # Linear Regression
+    plt.subplot(2, 2, 1)
+    plt.plot(test_X.index, test_Y, label='True')
+    plt.plot(test_X.index, lin_reg_model.predict(test_X), label='Linear Regression')
+    plt.xlabel('Date')
+    plt.ylabel('Wind Energy')
+    plt.title('Linear Regression')
+    plt.legend()
+
+    # KNN Regression
+    plt.subplot(2, 2, 2)
+    plt.plot(test_X.index, test_Y, label='True')
+    plt.plot(test_X.index, knn_model.predict(test_X), label='KNN Regression')
+    plt.xlabel('Date')
+    plt.ylabel('Wind Energy')
+    plt.title('KNN Regression')
+    plt.legend()
+
+    # SVR Regression
+    plt.subplot(2, 2, 3)
+    plt.plot(test_X.index, test_Y, label='True')
+    plt.plot(test_X.index, svr_model.predict(test_X), label='SVR Regression')
+    plt.xlabel('Date')
+    plt.ylabel('Wind Energy')
+    plt.title('SVR Regression')
+    plt.legend()
+
+    # Neural Network Regression
+    plt.subplot(2, 2, 4)
+    plt.plot(test_X.index, test_Y, label='True')
+    plt.plot(test_X.index, neural_network.predict(test_X), label='Neural Network Regression')
+    plt.xlabel('Date')
+    plt.ylabel('Wind Energy')
+    plt.title('Neural Network Regression')
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show()
 
 if __name__ == "__main__":
     part_1()
