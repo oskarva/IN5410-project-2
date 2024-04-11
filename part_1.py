@@ -1,4 +1,4 @@
 
-def part1():
+def part_1():
     return None
 
