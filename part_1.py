@@ -28,7 +28,7 @@ def part_1():
     lin_reg_model.fit(train_X, train_Y)
 
     predictions = lin_reg_model.predict(test_X)
-    score = lin_reg_model.score(predictions, test_Y)
+    score = lin_reg_model.score(test_X, test_Y)
     print(score)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
@@ -39,7 +39,7 @@ def part_1():
     knn_model.fit(train_X, train_Y)
 
     predictions = knn_model.predict(test_X)
-    score = knn_model.score(predictions, test_Y)
+    score = knn_model.score(test_X, test_Y)
     print(score)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
@@ -51,7 +51,7 @@ def part_1():
     svr_model.fit(train_X, train_Y)
 
     predictions = svr_model.predict(test_X)
-    score = svr_model.score(predictions.reshape(-1, 1), test_Y)
+    score = svr_model.score(test_X, test_Y)
     print(score)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
@@ -63,7 +63,7 @@ def part_1():
     neural_network.fit(train_X, train_Y)
 
     predictions = neural_network.predict(test_X)
-    score = neural_network.score(predictions.reshape(-1, 1), test_Y)
+    score = neural_network.score(test_X, test_Y)
     print(score)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
