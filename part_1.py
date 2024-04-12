@@ -95,28 +95,28 @@ def part_1():
     # KNN Regression
     plt.subplot(2, 2, 2)
     plt.plot(test_X.index, test_Y, label='True')
-    plt.plot(test_X.index, knn_model.predict(test_X), label='KNN Regression')
+    plt.plot(test_X.index, knn_model.predict(test_X), label='KNN')
     plt.xlabel('Date')
     plt.ylabel('Wind Energy')
-    plt.title('KNN Regression')
+    plt.title('KNN')
     plt.legend()
 
     # SVR Regression
     plt.subplot(2, 2, 3)
     plt.plot(test_X.index, test_Y, label='True')
-    plt.plot(test_X.index, svr_model.predict(test_X), label='SVR Regression')
+    plt.plot(test_X.index, svr_model.predict(test_X), label='SVR')
     plt.xlabel('Date')
     plt.ylabel('Wind Energy')
-    plt.title('SVR Regression')
+    plt.title('SVR')
     plt.legend()
 
     # Neural Network Regression
     plt.subplot(2, 2, 4)
     plt.plot(test_X.index, test_Y, label='True')
-    plt.plot(test_X.index, neural_network.predict(test_X), label='Neural Network Regression')
+    plt.plot(test_X.index, neural_network.predict(test_X), label='Neural Network')
     plt.xlabel('Date')
     plt.ylabel('Wind Energy')
-    plt.title('Neural Network Regression')
+    plt.title('Neural Network')
     plt.legend()
 
     plt.tight_layout()
