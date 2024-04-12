@@ -35,7 +35,7 @@ def part_1():
     #Save the predictions to a .csv file, with the same timestamp as the test data
     pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_1/ForecastTemplate1-LR.csv")
 
-    #2. KNN regression
+    #2. KNN 
     knn_model = KNeighborsRegressor(n_neighbors=5)
     knn_model.fit(train_X, train_Y)
 
@@ -45,7 +45,7 @@ def part_1():
     #Save the predictions to a .csv file, with the same timestamp as the test data
     pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_1/ForecastTemplate1-kNN.csv")
 
-    #3. SVR regression
+    #3. SVR 
     #TODO: Tune hyperparameters
     svr_model = SVR()
     svr_model.fit(train_X, train_Y)
@@ -56,7 +56,7 @@ def part_1():
     #Save the predictions to a .csv file, with the same timestamp as the test data
     pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_1/ForecastTemplate1-SVR.csv")
 
-    #4. Neural network regression
+    #4. Neural network g
     #TODO: Tune hyperparameters
     neural_network = MLPRegressor(hidden_layer_sizes=(30, 30), max_iter=1000, activation='relu')
     neural_network.fit(train_X, train_Y)
@@ -92,7 +92,7 @@ def part_1():
     plt.title('Linear Regression')
     plt.legend()
 
-    # KNN Regression
+    # KNN 
     plt.subplot(2, 2, 2)
     plt.plot(test_X.index, test_Y, label='True')
     plt.plot(test_X.index, knn_model.predict(test_X), label='KNN')
@@ -101,7 +101,7 @@ def part_1():
     plt.title('KNN')
     plt.legend()
 
-    # SVR Regression
+    # SVR 
     plt.subplot(2, 2, 3)
     plt.plot(test_X.index, test_Y, label='True')
     plt.plot(test_X.index, svr_model.predict(test_X), label='SVR')
@@ -110,7 +110,7 @@ def part_1():
     plt.title('SVR')
     plt.legend()
 
-    # Neural Network Regression
+    # Neural Network 
     plt.subplot(2, 2, 4)
     plt.plot(test_X.index, test_Y, label='True')
     plt.plot(test_X.index, neural_network.predict(test_X), label='Neural Network')
