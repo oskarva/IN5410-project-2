@@ -66,7 +66,7 @@ def part_2():
     # plt.grid(True)
     plt.tight_layout()
     # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
-    plt.savefig("part2.pdf")
+    plt.savefig("out/part_2/part_2_plot.pdf")
     plt.show()
 
     # Calculate RMSE and compare prediction accuracy
