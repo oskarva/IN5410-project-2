@@ -8,6 +8,7 @@ from tensorflow.keras.layers import SimpleRNN, Dense, LSTM
 from tensorflow.keras.models import Sequential 
 
 def part_3():
+    rnd_seed = 42
     #load the training data
     #train_data = get_train_data()
 
@@ -54,7 +55,7 @@ def part_3():
 
     #3. ANN regression
     #TODO: Tune hyperparameters
-    neural_network = MLPRegressor(hidden_layer_sizes=(30, 30), max_iter=1000, activation='relu')
+    neural_network = MLPRegressor(hidden_layer_sizes=(30, 30), max_iter=1000, activation='relu', random_state=rnd_seed)
     neural_network.fit(train_X, train_Y)
 
     predictions = neural_network.predict(test_X)
