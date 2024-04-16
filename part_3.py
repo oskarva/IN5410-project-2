@@ -4,8 +4,8 @@ from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import root_mean_squared_error
 import matplotlib.pyplot as plt
-from tensorflow.keras.layers import SimpleRNN, Dense
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import SimpleRNN, Dense 
+from tensorflow.keras.models import Sequential 
 
 def part_3():
     #load the training data
@@ -81,10 +81,25 @@ def part_3():
     
     history = simple_rnn.fit(
         train_X, train_Y,
-        epochs=10,
+        epochs=5,
         batch_size=32,
     )
 
+    predictions = simple_rnn.predict(test_X, batch_size=32)
+    rmse_RNN = root_mean_squared_error(test_Y, predictions)
+
+    #Save the predictions to a .csv file, with the same timestamp as the test data
+    pd.DataFrame(predictions, index=test_X_COPY['TIMESTAMP'], columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-RNN.csv")
+
+    #5. Plot the RMSE values
+    models = ['Linear Regression', 'SVR', 'Neural Network', 'RNN']
+    rmse_values = [rmse_lin_reg, rmse_SVG, rmse_NN, rmse_RNN]
+
+    plt.bar(models, rmse_values)
+    plt.xlabel("Model")
+    plt.ylabel("RMSE")
+    plt.title("RMSE values for different models")
+    plt.show()
 
 if __name__ == "__main__":
     part_3()
