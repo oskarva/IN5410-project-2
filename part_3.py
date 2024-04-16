@@ -50,6 +50,18 @@ def part_3():
     #Save the predictions to a .csv file, with the same timestamp as the test data
     pd.DataFrame(predictions, index=test_X_COPY['TIMESTAMP'], columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-SVR.csv")
 
+    #3. ANN regression
+    #TODO: Tune hyperparameters
+    neural_network = MLPRegressor(hidden_layer_sizes=(30, 30), max_iter=1000, activation='relu')
+    neural_network.fit(train_X, train_Y)
+
+    predictions = neural_network.predict(test_X)
+    rmse_NN = root_mean_squared_error(test_Y, predictions)
+
+    #Save the predictions to a .csv file, with the same timestamp as the test data
+    pd.DataFrame(predictions, index=test_X_COPY['TIMESTAMP'], columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-NN.csv")
+
+    
 
 if __name__ == "__main__":
     part_3()
