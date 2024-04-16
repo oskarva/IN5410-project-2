@@ -87,10 +87,10 @@ def part_3():
     history = simple_rnn.fit(
         train_X, train_Y,
         epochs=10,
-        batch_size=32,
+        batch_size=1,
     )
 
-    predictions = simple_rnn.predict(test_X, batch_size=32)
+    predictions = simple_rnn.predict(test_X, batch_size=1)
     rmse_RNN = root_mean_squared_error(test_Y, predictions)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
