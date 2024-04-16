@@ -4,6 +4,8 @@ from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import root_mean_squared_error
 import matplotlib.pyplot as plt
+from tensorflow.keras.layers import SimpleRNN, Dense
+from tensorflow.keras.models import Sequential
 
 def part_3():
     #load the training data
@@ -61,7 +63,28 @@ def part_3():
     #Save the predictions to a .csv file, with the same timestamp as the test data
     pd.DataFrame(predictions, index=test_X_COPY['TIMESTAMP'], columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-NN.csv")
 
+    #4. RNN regression
+    simple_rnn = Sequential(
+        [ #Setting up the layers
+            SimpleRNN(30, activation='relu', input_shape=(1, 1)),
+            Dense(1)
+        ]
+    )
+
+    simple_rnn.compile(
+        optimizer='adam', 
+        loss='mean_squared_error',
+    )
     
+    #Reshape the data
+    train_X = train_X.values.reshape(-1, 1, 1)
+    
+    history = simple_rnn.fit(
+        train_X, train_Y,
+        epochs=10,
+        batch_size=32,
+    )
+
 
 if __name__ == "__main__":
     part_3()
