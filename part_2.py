@@ -59,8 +59,8 @@ def part_2():
     
     
     #PLOTS    
-    plt.figure(figsize=(10, 6))
-    plt.plot(pd.to_datetime(solution.index), solution[['POWER']], label='True Wind Energy Measurement')
+    plt.figure(figsize=(10, 4))
+    plt.plot(pd.to_datetime(solution.index), solution[['POWER']], label='Real Data')
     plt.plot(pd.to_datetime(weather_forecast_input.index), wind_power_predictions_ws, label='Linear Regression')
     plt.plot(pd.to_datetime(weather_forecast_input.index), wind_power_predictions, label='Multiple Linear Regression')
     plt.xlabel('Date (dd-mm)')
@@ -73,7 +73,7 @@ def part_2():
     plt.gca().xaxis.set_major_locator(mdates.DayLocator())
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))
     plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
-    plt.savefig("out/part_2/part_2_plot.eps")
+    plt.savefig("out/part_2/part_2_plot.eps", transparent=False, bbox_inches='tight')
     plt.show()
 
 
