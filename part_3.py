@@ -95,11 +95,12 @@ def part_3():
     models = ['Linear Regression', 'SVR', 'Neural Network', 'RNN']
     rmse_values = [rmse_lin_reg, rmse_SVG, rmse_NN, rmse_RNN]
 
-    plt.bar(models, rmse_values)
-    plt.xlabel("Model")
-    plt.ylabel("RMSE")
-    plt.title("RMSE values for different models")
-    plt.show()
+    #6. Table of RMSE values
+    print("RMSE values for different models:")
+    table_data = { 'Model': models, 'RMSE': rmse_values }
+    pd_table = pd.DataFrame(table_data)
+    print(pd_table)
+
 
 if __name__ == "__main__":
     part_3()
