@@ -9,17 +9,14 @@ from tensorflow.keras.models import Sequential
 
 def part_3():
     rnd_seed = 42
-    #load the training data
-    #train_data = get_train_data()
 
-    #Only need windspeed data (10 meters above ground level)
+    #Loading training data. Not using Timestamps as index here, so requires a different approach than in previous exercises.
     train_data = pd.read_csv("TrainData.csv")
     train_data['TIMESTAMP'] = pd.to_datetime(train_data['TIMESTAMP'], format="%Y%m%d %H:%M")
     train_data['TIMESTAMP'] = train_data['TIMESTAMP'].astype(int) / 10**9
     train_data['TIMESTAMP'] = train_data['TIMESTAMP'].astype(int)
     train_X = train_data[['TIMESTAMP']]
     train_Y = train_data.copy()
-    #train_Y.set_index('TIMESTAMP', inplace=True)
     train_Y = train_Y[['POWER']]
 
     #load the test data
