@@ -68,10 +68,9 @@ def part_3():
     #4. RNN regression
     simple_rnn = Sequential(
         [ #Setting up the layers
-            Dense(1),
+            Dense(1), #input layer
             LSTM(20, activation='relu', input_shape=(1, 1)),
-            Dense(20, activation='relu'),
-            Dense(1)
+            Dense(1), #output layer
         ]
 
     )
