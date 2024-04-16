@@ -4,6 +4,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import root_mean_squared_error
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 def part_2():
     
@@ -30,6 +31,9 @@ def part_2():
     #  Make predictions for the wind power production for November 2013
     X_test = weather_forecast_input[['WS10', 'wind_direction']]
     wind_power_predictions = mlr_model.predict(X_test)
+    
+    #Save the predictions to a .csv file, with the same timestamp as the test data
+    pd.DataFrame(wind_power_predictions, index=X_test.index, columns=['POWER']).to_csv("out/part_2/ForecastTemplate2.csv")
 
     # Evaluate the predictions using RMSE
     true_wind_power = solution[['POWER']]
@@ -55,19 +59,23 @@ def part_2():
     
     
     #PLOTS    
-    plt.figure(figsize=(10, 6))
-    plt.plot(solution.index, solution[['POWER']], label='True Wind Energy Measurement')
-    plt.plot(weather_forecast_input.index, wind_power_predictions_ws, label='Linear Regression')
-    plt.plot(weather_forecast_input.index, wind_power_predictions, label='Multiple Linear Regression')
-    plt.xlabel('Timestamps')
+    plt.figure(figsize=(10, 4))
+    plt.plot(pd.to_datetime(solution.index), solution[['POWER']], label='Real Data')
+    plt.plot(pd.to_datetime(weather_forecast_input.index), wind_power_predictions_ws, label='Linear Regression')
+    plt.plot(pd.to_datetime(weather_forecast_input.index), wind_power_predictions, label='Multiple Linear Regression')
+    plt.xlabel('Date (dd-mm)')
     plt.ylabel('Wind Power')
-    plt.title('Wind Power Forecasting for November 2013')
+    # plt.title('Wind Power Forecasting for November 2013')
     plt.legend()
     # plt.grid(True)
     plt.tight_layout()
-    # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
-    plt.savefig("out/part_2/part_2_plot.pdf")
+    # Set x-axis ticks to be at the beginning of each day
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator())
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))
+    plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+    plt.savefig("out/part_2/part_2_plot.eps", transparent=False, bbox_inches='tight')
     plt.show()
+
 
     # Calculate RMSE and compare prediction accuracy
     rmse_table = pd.DataFrame({'Model': ['Linear Regression', 'Multiple Linear Regression'],
