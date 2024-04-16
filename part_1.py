@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 #Test data = WeatherForecastInput.csv (test inputs) and Solution.csv (gold standard)
 #Generates: four output .csv files 
 def part_1():
+    rnd_seed = 42
 
     #load the training data
     train_data = get_train_data()
@@ -58,7 +59,7 @@ def part_1():
 
     #4. Neural network regression
     #TODO: Tune hyperparameters
-    neural_network = MLPRegressor(hidden_layer_sizes=(30, 30), max_iter=1000, activation='relu')
+    neural_network = MLPRegressor(hidden_layer_sizes=(30, 30), max_iter=1000, activation='relu', random_state=rnd_seed)
     neural_network.fit(train_X, train_Y)
 
     predictions = neural_network.predict(test_X)
