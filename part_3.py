@@ -67,6 +67,7 @@ def part_3():
     #4. RNN regression
     simple_rnn = Sequential(
         [ #Setting up the layers
+            Dense(1),
             LSTM(20, activation='relu', input_shape=(1, 1)),
             Dense(20, activation='relu'),
             Dense(1)
@@ -84,7 +85,7 @@ def part_3():
     
     history = simple_rnn.fit(
         train_X, train_Y,
-        epochs=5,
+        epochs=10,
         batch_size=32,
     )
 
