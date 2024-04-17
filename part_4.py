@@ -105,9 +105,7 @@ class NN_layer:
                 #TODO: Minus or plus below?
                 self._weights[nodeNumber][j] += learning_rate * (error * self.output[0] * (1 - self.output[0]) * prev_or_next_layer.output[j])
         else:
-            error = 0
-            for i, x in enumerate(X):
-                error += self._weights[0][i] * x
+            error = Y - prev_or_next_layer.output[0]
             for i in range(self._nodes):
                 for j in range(len(self._weights[i])):
                     #TODO: Minus or plus below?
