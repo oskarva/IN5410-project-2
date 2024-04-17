@@ -16,11 +16,17 @@ def part_4():
               ]
     nn = NN(layers)
 
+    nn.fit(train_X, train_Y)
+
+    predictions = nn.predict(train_X)
+    print( 0.5 * (0.5 - predictions[0][0]) ** 2) #MSE
+
+
 class NN:
     def __init__(self, layers) -> None:
         self._layers = layers
-        if layers[-1] != 1: #Enforce 1 output node for simplicity
-            self._layers[-1] = 1
+        if layers[-1]._nodes != 1: #Enforce 1 output node for simplicity
+            self._layers[-1]._nodes = 1
         self._learning_rate = 0.4
 
     def fit(self, X, Y):
@@ -32,7 +38,7 @@ class NN:
                 self._forward_propagation(x)
                 self._back_propagation(x, y)
             
-            new_error = 0.5 * (y - self._layers[-1].output) ** 2
+            new_error = 0.5 * (y - self._layers[-1].output[0]) ** 2
             if abs(new_error - error) <= threshold: #TODO: SHould I do abs or not?
                 return
             error = new_error
@@ -57,7 +63,7 @@ class NN:
 class NN_layer:
     def __init__(self, nodes, input_size, output_size, input_layer=False, output_layer=False) -> None:
         self._nodes = nodes
-        self._weights = None if input_layer or output_layer \
+        self._weights = None if input_layer \
                         else np.random.rand(nodes, input_size)
         self._input_layer = input_layer
         self._output_layer = output_layer
@@ -80,7 +86,21 @@ class NN_layer:
         return out
 
     def back_propagation(self, X, Y, learning_rate):
-        return None
+        if self._input_layer:
+            raise Exception("Cannot backpropagate on input layer")
+
+        elif self._output_layer:
+            error = Y - self.output[0]
+            for i in range(self._nodes):
+                for j in range(len(X)):
+                    self._weights[i][j] += learning_rate * error * self.output[i] * (1 - self.output[i]) * X[j]
+        else:
+            error = 0
+            for i, x in enumerate(X):
+                error += self._weights[0][i] * x
+            for i in range(self._nodes):
+                for j in range(len(X)):
+                    self._weights[i][j] += learning_rate * error * self.output[i] * (1 - self.output[i]) * X[j]
     
     def activation(self, x):
         return 1 / (1 + np.exp(-x))
