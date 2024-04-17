@@ -25,7 +25,10 @@ class NN:
         return None
     
     def _forward_propagation(self, X):
-        return None
+        for i, layer in enumerate(self._layers):
+            X = layer.forward_propagation(X)
+
+        return X
 
     def _back_propagation(self, X, Y):
         return None
@@ -44,9 +47,12 @@ class NN_layer:
                         else np.random.rand(nodes, input_size)
         self._input_layer = input_layer
         self._output_layer = output_layer
+
+        self.output = None
     
     def forward_propagation(self, X):
         if self._input_layer:
+            self.output = X
             return X
         
         out = []
@@ -56,6 +62,7 @@ class NN_layer:
                 total += self._weights[i][j] * x
             out.append(self.activation(total))
         
+        self.output = out
         return out
 
 
