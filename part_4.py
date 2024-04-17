@@ -8,9 +8,9 @@ The class will be able to have an adjustable number of layers and nodes in all l
 def part_4():
     train_X = [[0.04, 0.2]] #x1 and x2
     train_Y = [0.5] #y1
-    layers = [NN_layer(nodes=2, input_layer=True), 
-              NN_layer(nodes=2),
-              NN_layer(nodes=1, output_layer=True),
+    layers = [NN_layer(nodes=2, input_size=2, output_size=2, input_layer=True), 
+              NN_layer(nodes=2, input_size=2, output_size=2),   #Hidden layer
+              NN_layer(nodes=1, input_size=2, output_size=1, output_layer=True),
               ]
     nn = NN(layers)
 
@@ -39,13 +39,22 @@ class NN:
 
 class NN_layer:
     def __init__(self, nodes, input_size, output_size, input_layer=False, output_layer=False) -> None:
+        self._nodes = nodes
         self._weights = None if input_layer or output_layer \
                         else np.random.rand(nodes, input_size)
         self._input_layer = input_layer
         self._output_layer = output_layer
     
     def _forward_propagation(self, X):
-        return None
+        out = []
+        for i in range(self._nodes):
+            total = 0
+            for j, x in enumerate(X):
+                total += self._weights[i][j] * x
+            out.append(self.activation(total))
+        
+        return out
+
 
     def _back_propagation(self, X, Y, learning_rate):
         return None
