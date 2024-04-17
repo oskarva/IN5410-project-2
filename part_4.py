@@ -71,7 +71,7 @@ class NN_layer:
                             weights if type(weights) != None \
                             else np.random.rand(nodes, input_size)
                             )
-        print(self._weights)
+
         self._input_layer = input_layer
         self._output_layer = output_layer
 
