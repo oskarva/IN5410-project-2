@@ -10,9 +10,12 @@ def part_4():
                 [0.04, 0.2] #x1 and x2
               ] 
     train_Y = [0.5] #y1
+    w1w2w3w4 = np.array([[0.11, 0.22], [0.33, 0.44]])
+    w5w6 = np.array([[0.55, 0.66]])
+
     layers = [NN_layer(nodes=2, input_size=2, output_size=2, input_layer=True), 
-              NN_layer(nodes=2, input_size=2, output_size=2),   #Hidden layer
-              NN_layer(nodes=1, input_size=2, output_size=1, output_layer=True),
+              NN_layer(nodes=2, input_size=2, output_size=2, weights=w1w2w3w4),   #Hidden layer
+              NN_layer(nodes=1, input_size=2, output_size=1, output_layer=True, weights=w5w6),
               ]
     nn = NN(layers)
 
@@ -31,7 +34,7 @@ class NN:
 
     def fit(self, X, Y):
         error = float('inf') #Initialize error to infinity
-        threshold = 0.0001
+        threshold = 0.00001
         #max iterations in case of threshold not being reached?
         while True:
             for x, y in zip(X, Y):
@@ -64,10 +67,11 @@ class NN_layer:
     def __init__(self, nodes, input_size, output_size, input_layer=False, output_layer=False, weights=None) -> None:
         self._nodes = nodes
         self._weights = None if input_layer \
-                        else (
-                            weights if weights \
+                        else (#np.random.rand(nodes, input_size)
+                            weights if type(weights) != None \
                             else np.random.rand(nodes, input_size)
                             )
+        print(self._weights)
         self._input_layer = input_layer
         self._output_layer = output_layer
 
