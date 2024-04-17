@@ -53,7 +53,7 @@ class NN:
         return X
 
     def _back_propagation(self, X, Y):
-        for i in range(len(self._layers) - 1, 0, -1):
+        for i in range(len(self._layers) - 1, 0, -1): #all layers except input layer
             self._layers[i].back_propagation(X, Y, self._learning_rate)
     
     def predict(self, test_X):
@@ -67,7 +67,7 @@ class NN_layer:
     def __init__(self, nodes, input_size, output_size, input_layer=False, output_layer=False, weights=None) -> None:
         self._nodes = nodes
         self._weights = None if input_layer \
-                        else (#np.random.rand(nodes, input_size)
+                        else (
                             weights if type(weights) != None \
                             else np.random.rand(nodes, input_size)
                             )
@@ -92,7 +92,7 @@ class NN_layer:
         self.output = out
         return out
 
-    def back_propagation(self, X, Y, learning_rate):
+    def back_propagation(self, X, Y, learning_rate): #TODO: The innermost line of each for loop is wrong (self._weights[i][j] ...)
         if self._input_layer:
             raise Exception("Cannot backpropagate on input layer")
 
