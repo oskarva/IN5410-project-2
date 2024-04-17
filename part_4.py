@@ -6,7 +6,9 @@ The class will be able to have an adjustable number of layers and nodes in all l
 """
 
 def part_4():
-    train_X = [[0.04, 0.2]] #x1 and x2
+    train_X = [
+                [0.04, 0.2] #x1 and x2
+              ] 
     train_Y = [0.5] #y1
     layers = [NN_layer(nodes=2, input_size=2, output_size=2, input_layer=True), 
               NN_layer(nodes=2, input_size=2, output_size=2),   #Hidden layer
@@ -22,7 +24,18 @@ class NN:
         self._learning_rate = 0.4
 
     def fit(self, X, Y):
-        return None
+        error = float('inf') #Initialize error to infinity
+        threshold = 0.0001
+        #max iterations in case of threshold not being reached?
+        while True:
+            for x, y in zip(X, Y):
+                self._forward_propagation(x)
+                self._back_propagation(x, y)
+            
+            new_error = 0.5 * (y - self._layers[-1].output) ** 2
+            if abs(new_error - error) <= threshold: #TODO: SHould I do abs or not?
+                return
+            error = new_error
     
     def _forward_propagation(self, X):
         for i, layer in enumerate(self._layers):
@@ -31,7 +44,8 @@ class NN:
         return X
 
     def _back_propagation(self, X, Y):
-        return None
+        for i in range(len(self._layers) - 1, 0, -1):
+            self._layers[i].back_propagation(X, Y, self._learning_rate)
     
     def predict(self, test_X):
         predictions = []
