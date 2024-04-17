@@ -27,7 +27,6 @@ def part_4():
 
 class NN:
     def __init__(self, layers) -> None:
-        np.random.seed(42)
         self._layers = layers
         if layers[-1]._nodes != 1: #Enforce 1 output node for simplicity
             self._layers[-1]._nodes = 1
@@ -68,6 +67,7 @@ class NN:
 
 class NN_layer:
     def __init__(self, nodes, input_size, output_size, input_layer=False, output_layer=False, weights=None) -> None:
+        np.random.seed(42)
         self._nodes = nodes
         self._weights = None if input_layer \
                         else (
