@@ -19,7 +19,7 @@ def part_4():
     nn.fit(train_X, train_Y)
 
     predictions = nn.predict(train_X)
-    print( 0.5 * (0.5 - predictions[0][0]) ** 2) #MSE
+    print( 0.5 * (train_Y[0] - predictions[0][0]) ** 2) #MSE
 
 
 class NN:
@@ -61,10 +61,13 @@ class NN:
         return predictions
 
 class NN_layer:
-    def __init__(self, nodes, input_size, output_size, input_layer=False, output_layer=False) -> None:
+    def __init__(self, nodes, input_size, output_size, input_layer=False, output_layer=False, weights=None) -> None:
         self._nodes = nodes
         self._weights = None if input_layer \
-                        else np.random.rand(nodes, input_size)
+                        else (
+                            weights if weights \
+                            else np.random.rand(nodes, input_size)
+                            )
         self._input_layer = input_layer
         self._output_layer = output_layer
 
