@@ -79,15 +79,12 @@ class NN_layer:
         self.output = out
         return out
 
-
     def back_propagation(self, X, Y, learning_rate):
         return None
     
     def activation(self, x):
         return 1 / (1 + np.exp(-x))
 
-    def predict(self, test_X):
-        return None
 
 if __name__ == "__main__":
     part_4()
