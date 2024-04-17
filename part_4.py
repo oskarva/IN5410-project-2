@@ -54,7 +54,9 @@ class NN:
 
     def _back_propagation(self, X, Y):
         for i in range(len(self._layers) - 1, 0, -1): #all layers except input layer
-            self._layers[i].back_propagation(X, Y, self._learning_rate)
+            if self._layers[i]._output_layer:
+                layer_to_send_with = self._layers[1]
+            self._layers[i].back_propagation(X, Y, self._learning_rate, layer_to_send_with)
     
     def predict(self, test_X):
         predictions = []
@@ -92,22 +94,24 @@ class NN_layer:
         self.output = out
         return out
 
-    def back_propagation(self, X, Y, learning_rate): #TODO: The innermost line of each for loop is wrong (self._weights[i][j] ...)
+    def back_propagation(self, X, Y, learning_rate, prev_or_next_layer): 
         if self._input_layer:
             raise Exception("Cannot backpropagate on input layer")
 
         elif self._output_layer:
             error = Y - self.output[0]
-            for i in range(self._nodes):
-                for j in range(len(X)):
-                    self._weights[i][j] += learning_rate * error * self.output[i] * (1 - self.output[i]) * X[j]
+            nodeNumber = 0 #only one node in output layer
+            for j in range(len(self._weights[nodeNumber])):
+                #TODO: Minus or plus below?
+                self._weights[nodeNumber][j] += learning_rate * (error * self.output[0] * (1 - self.output[0]) * prev_or_next_layer.output[j])
         else:
             error = 0
             for i, x in enumerate(X):
                 error += self._weights[0][i] * x
             for i in range(self._nodes):
-                for j in range(len(X)):
-                    self._weights[i][j] += learning_rate * error * self.output[i] * (1 - self.output[i]) * X[j]
+                for j in range(len(self._weights[i])):
+                    #TODO: Minus or plus below?
+                    self._weights[i][j] += learning_rate * (error * prev_or_next_layer.output[0] * (1 - prev_or_next_layer.output[0]) * prev_or_next_layer._weights[0][i] * self.output[i] * (1 - self.output[i]) * X[j])
     
     def activation(self, x):
         return 1 / (1 + np.exp(-x))
