@@ -71,10 +71,9 @@ class NN_layer:
         self._nodes = nodes
         self._weights = None if input_layer \
                         else (
-                            weights if type(weights) != None \
+                            weights if isinstance(weights, np.ndarray) \
                             else np.random.rand(nodes, input_size)
                             )
-
         self._input_layer = input_layer
         self._output_layer = output_layer
 
