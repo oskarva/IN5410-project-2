@@ -33,7 +33,7 @@ class NN:
         self._learning_rate = 0.4
 
     def fit(self, X, Y):
-        error = float('inf') #Initialize error to infinity
+        error = None #Initialize error to infinity
         threshold = 0.00001
         #max iterations in case of threshold not being reached?
         while True:
@@ -42,7 +42,7 @@ class NN:
                 self._back_propagation(x, y)
             
             new_error = 0.5 * (y - self._layers[-1].output[0]) ** 2
-            if abs(new_error - error) <= threshold: #TODO: SHould I do abs or not?
+            if error != None and new_error - error <= threshold: #TODO: SHould I do abs or not?
                 return
             error = new_error
     
