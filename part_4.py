@@ -45,7 +45,10 @@ class NN_layer:
         self._input_layer = input_layer
         self._output_layer = output_layer
     
-    def _forward_propagation(self, X):
+    def forward_propagation(self, X):
+        if self._input_layer:
+            return X
+        
         out = []
         for i in range(self._nodes):
             total = 0
@@ -56,13 +59,13 @@ class NN_layer:
         return out
 
 
-    def _back_propagation(self, X, Y, learning_rate):
+    def back_propagation(self, X, Y, learning_rate):
         return None
     
     def activation(self, x):
         return 1 / (1 + np.exp(-x))
 
-    def predict(self, test_X, batch_size):
+    def predict(self, test_X):
         return None
 
 if __name__ == "__main__":
