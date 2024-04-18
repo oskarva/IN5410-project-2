@@ -33,7 +33,7 @@ class NN:
         self._learning_rate = 0.4
 
     def fit(self, X, Y):
-        error = None #Initialize error to infinity
+        error = None 
         threshold = 0.00001
         #max iterations in case of threshold not being reached?
         while True:
@@ -41,8 +41,8 @@ class NN:
                 self._forward_propagation(x)
                 self._back_propagation(x, y)
             
-            new_error = 0.5 * (y - self._layers[-1].output[0]) ** 2
-            if error != None and new_error - error <= threshold: #TODO: SHould I do abs or not?
+            new_error = 0.5 * (y - self._layers[-1].output[0]) ** 2 #MSE
+            if error != None and error - new_error <= threshold and new_error <= error: 
                 return
             error = new_error
     
@@ -56,6 +56,8 @@ class NN:
         for i in range(len(self._layers) - 1, 0, -1): #all layers except input layer
             if self._layers[i]._output_layer:
                 layer_to_send_with = self._layers[1]
+            elif not self._layers[i]._input_layer and not self._layers[i]._output_layer:
+                layer_to_send_with = self._layers[2]
             self._layers[i].back_propagation(X, Y, self._learning_rate, layer_to_send_with)
     
     def predict(self, test_X):
@@ -99,17 +101,15 @@ class NN_layer:
             raise Exception("Cannot backpropagate on input layer")
 
         elif self._output_layer:
-            error = Y - self.output[0]
+            error = - Y + self.output[0]
             nodeNumber = 0 #only one node in output layer
             for j in range(len(self._weights[nodeNumber])):
-                #TODO: Minus or plus below?
-                self._weights[nodeNumber][j] += learning_rate * (error * self.output[0] * (1 - self.output[0]) * prev_or_next_layer.output[j])
+                self._weights[nodeNumber][j] -= learning_rate * (error * self.output[0] * (1 - self.output[0]) * prev_or_next_layer.output[j])
         else:
-            error = Y - prev_or_next_layer.output[0]
+            error = - Y + prev_or_next_layer.output[0]
             for i in range(self._nodes):
                 for j in range(len(self._weights[i])):
-                    #TODO: Minus or plus below?
-                    self._weights[i][j] += learning_rate * (error * prev_or_next_layer.output[0] * (1 - prev_or_next_layer.output[0]) * prev_or_next_layer._weights[0][i] * self.output[i] * (1 - self.output[i]) * X[j])
+                    self._weights[i][j] -= learning_rate * (error * prev_or_next_layer.output[0] * (1 - prev_or_next_layer.output[0]) * prev_or_next_layer._weights[0][i] * self.output[i] * (1 - self.output[i]) * X[j])
     
     def activation(self, x):
         return 1 / (1 + np.exp(-x))
