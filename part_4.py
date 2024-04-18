@@ -65,29 +65,32 @@ def part_4():
     train_Y = [0.5] #y1
     w1w2w3w4 = np.array([[0.11, 0.22], [0.33, 0.44]])
     w5w6 = np.array([[0.55, 0.66]])
+    
+    threshold = 0.00001
 
     layers = [NN_layer(nodes=2, input_size=2, output_size=2, input_layer=True), 
               NN_layer(nodes=2, input_size=2, output_size=2, weights=w1w2w3w4),   #Hidden layer
               NN_layer(nodes=1, input_size=2, output_size=1, output_layer=True, weights=w5w6),
               ]
-    nn = NN(layers)
+    nn = NN(layers, threshold)
 
     nn.fit(train_X, train_Y)
 
     predictions = nn.predict(train_X)
-    print( 0.5 * (train_Y[0] - predictions[0][0]) ** 2) #MSE
+    print("Threshold: ", threshold)
+    print(f"Final MSE: {0.5 * (train_Y[0] - predictions[0][0]) ** 2}") 
 
 
 class NN:
-    def __init__(self, layers) -> None:
+    def __init__(self, layers, threshold) -> None:
         self._layers = layers
         if layers[-1]._nodes != 1: #Enforce 1 output node for simplicity
             self._layers[-1]._nodes = 1
         self._learning_rate = 0.4
+        self._threshold = threshold
 
     def fit(self, X, Y):
         error = None 
-        threshold = 0.00001
         #max iterations in case of threshold not being reached?
         while True:
             for x, y in zip(X, Y):
@@ -95,7 +98,7 @@ class NN:
                 self._back_propagation(x, y)
             
             new_error = 0.5 * (y - self._layers[-1].output[0]) ** 2 #MSE
-            if error != None and error - new_error <= threshold and new_error <= error: 
+            if error != None and error - new_error <= self._threshold and new_error <= error: 
                 return
             error = new_error
     

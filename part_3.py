@@ -4,29 +4,45 @@ from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import root_mean_squared_error
 import matplotlib.pyplot as plt
-from tensorflow.keras.layers import SimpleRNN, Dense, LSTM
+from tensorflow.keras.layers import SimpleRNN, Dense, LSTM, RNN
 from tensorflow.keras.models import Sequential 
+import numpy as np
 
 def part_3():
-    rnd_seed = 42
-
-    #Loading training data. Not using Timestamps as index here, so requires a different approach than in previous exercises.
-    train_data = pd.read_csv("TrainData.csv")
-    train_data['TIMESTAMP'] = pd.to_datetime(train_data['TIMESTAMP'], format="%Y%m%d %H:%M")
-    train_data['TIMESTAMP'] = train_data['TIMESTAMP'].astype(int) / 10**9
-    train_data['TIMESTAMP'] = train_data['TIMESTAMP'].astype(int)
-    train_X = train_data[['TIMESTAMP']]
-    train_Y = train_data.copy()
-    train_Y = train_Y[['POWER']]
+    #constants
+    RND_SEED = 42
+    WINDOW_SIZE = 1
 
     #load the test data
-    test_X = pd.read_csv("WeatherForecastInput.csv")
-    test_X = test_X[['TIMESTAMP']]
-    test_X_COPY = test_X.copy()
-    test_X['TIMESTAMP'] = pd.to_datetime(test_X['TIMESTAMP'], format="%Y%m%d %H:%M")
-    test_X['TIMESTAMP'] = test_X['TIMESTAMP'].astype(int) / 10**9
-    test_X['TIMESTAMP'] = test_X['TIMESTAMP'].astype(int)
-    test_Y = get_test_data_Y()
+    test_data = get_test_data_Y() #Y, because we are only interested in power data, and WeatherForecastInput.csv does not contain power data
+    test_data = test_data['POWER'].values
+
+    features_test, targets_test = [], []
+
+    for i in range(WINDOW_SIZE, len(test_data)):
+        features_test.append(test_data[i-WINDOW_SIZE:i])
+        targets_test.append(test_data[i])
+    
+    # Convert to numpy arrays for use in training
+    test_X = pd.DataFrame(features_test, columns=[f'POWER_t-{i}' for i in range(WINDOW_SIZE, 0, -1)])
+    test_Y = pd.DataFrame(targets_test, columns=[f'POWER_t-{i}' for i in range(WINDOW_SIZE, 0, -1)])
+
+
+    #Load training data
+    data = pd.read_csv("TrainData.csv")
+    power_data = data['POWER'].values
+
+    #Prepare features and targets
+    features, targets = [], []
+
+    for i in range(WINDOW_SIZE, len(power_data)):
+        features.append(power_data[i-WINDOW_SIZE:i])
+        targets.append(power_data[i])
+
+    # Convert to numpy arrays for use in training
+    train_X = pd.DataFrame(features, columns=[f'POWER_t-{i}' for i in range(WINDOW_SIZE, 0, -1)])
+    train_Y = pd.DataFrame(targets, columns=[f'POWER_t-{i}' for i in range(WINDOW_SIZE, 0, -1)])
+
 
     #1. Linear regression
     #NOTE: fit_intercept=True by default. If the data is centered, set to False
@@ -37,10 +53,9 @@ def part_3():
     rmse_lin_reg = root_mean_squared_error(test_Y, predictions)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
-    pd.DataFrame(predictions, index=test_X_COPY['TIMESTAMP'], columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-LR.csv")
+    pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-LR.csv")
 
     #2. SVR regression
-    #TODO: Tune hyperparameters
     svr_model = SVR()
     svr_model.fit(train_X, train_Y)
 
@@ -48,25 +63,23 @@ def part_3():
     rmse_SVG = root_mean_squared_error(test_Y, predictions)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
-    pd.DataFrame(predictions, index=test_X_COPY['TIMESTAMP'], columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-SVR.csv")
+    pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-SVR.csv")
 
     #3. ANN regression
-    #TODO: Tune hyperparameters
-    neural_network = MLPRegressor(hidden_layer_sizes=(30, 30), max_iter=1000, activation='relu', random_state=rnd_seed)
+    neural_network = MLPRegressor(hidden_layer_sizes=(30, 30), max_iter=1000, activation='relu', random_state=RND_SEED)
     neural_network.fit(train_X, train_Y)
 
     predictions = neural_network.predict(test_X)
     rmse_NN = root_mean_squared_error(test_Y, predictions)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
-    pd.DataFrame(predictions, index=test_X_COPY['TIMESTAMP'], columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-NN.csv")
+    pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-NN.csv")
 
 
     #4. RNN regression
     simple_rnn = Sequential(
         [ #Setting up the layers
-            Dense(1), #input layer
-            LSTM(20, activation='relu', input_shape=(1, 1)),
+            SimpleRNN(20, activation='relu', input_shape=(WINDOW_SIZE, 1)), #RNN layer
             Dense(1), #output layer
         ]
 
@@ -78,19 +91,19 @@ def part_3():
     )
 
     #Reshape the data
-    train_X = train_X.values.reshape(-1, 1, 1)
+    train_X = train_X.values.reshape(-1, WINDOW_SIZE, 1)
     
     history = simple_rnn.fit(
         train_X, train_Y,
-        epochs=10,
-        batch_size=1,
+        epochs=50, 
+        batch_size=30, 
     )
 
     predictions = simple_rnn.predict(test_X, batch_size=1)
     rmse_RNN = root_mean_squared_error(test_Y, predictions)
 
     #Save the predictions to a .csv file, with the same timestamp as the test data
-    pd.DataFrame(predictions, index=test_X_COPY['TIMESTAMP'], columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-RNN.csv")
+    pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-RNN.csv")
 
     #5. Plot the RMSE values
     models = ['Linear Regression', 'SVR', 'Neural Network', 'RNN']
