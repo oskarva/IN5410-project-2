@@ -33,7 +33,7 @@ class NN:
         self._learning_rate = 0.4
 
     def fit(self, X, Y):
-        error = None #Initialize error to infinity
+        error = None 
         threshold = 0.00001
         #max iterations in case of threshold not being reached?
         while True:
@@ -41,8 +41,8 @@ class NN:
                 self._forward_propagation(x)
                 self._back_propagation(x, y)
             
-            new_error = 0.5 * (y - self._layers[-1].output[0]) ** 2
-            if error != None and new_error - error <= threshold: #TODO: SHould I do abs or not?
+            new_error = 0.5 * (y - self._layers[-1].output[0]) ** 2 #MSE
+            if error != None and new_error - error <= threshold and new_error <= error: 
                 return
             error = new_error
     
@@ -56,6 +56,8 @@ class NN:
         for i in range(len(self._layers) - 1, 0, -1): #all layers except input layer
             if self._layers[i]._output_layer:
                 layer_to_send_with = self._layers[1]
+            elif not self._layers[i]._input_layer and not self._layers[i]._output_layer:
+                layer_to_send_with = self._layers[2]
             self._layers[i].back_propagation(X, Y, self._learning_rate, layer_to_send_with)
     
     def predict(self, test_X):
