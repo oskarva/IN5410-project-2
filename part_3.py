@@ -24,8 +24,8 @@ def part_3():
         targets_test.append(test_data[i])
     
     # Convert to numpy arrays for use in training
-    test_X = pd.DataFrame(features_test, columns=['POWER' ])
-    test_Y = pd.DataFrame(targets_test, columns=['POWER' ])
+    test_X = pd.DataFrame(features_test, columns=[f'POWER_t-{i}' for i in range(WINDOW_SIZE, 0, -1)])
+    test_Y = pd.DataFrame(targets_test, columns=[f'POWER_t-{i}' for i in range(WINDOW_SIZE, 0, -1)])
 
 
     #Load training data
@@ -40,8 +40,8 @@ def part_3():
         targets.append(power_data[i])
 
     # Convert to numpy arrays for use in training
-    train_X = pd.DataFrame(features, columns=['POWER'])
-    train_Y = pd.DataFrame(targets, columns=['POWER' ])
+    train_X = pd.DataFrame(features, columns=[f'POWER_t-{i}' for i in range(WINDOW_SIZE, 0, -1)])
+    train_Y = pd.DataFrame(targets, columns=[f'POWER_t-{i}' for i in range(WINDOW_SIZE, 0, -1)])
 
 
     #1. Linear regression
@@ -98,8 +98,8 @@ def part_3():
     
     history = simple_rnn.fit(
         train_X, train_Y,
-        epochs=10,
-        batch_size=1,
+        epochs=50, 
+        batch_size=30, 
     )
 
     predictions = simple_rnn.predict(test_X, batch_size=1)
