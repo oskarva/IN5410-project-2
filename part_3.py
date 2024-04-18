@@ -56,7 +56,6 @@ def part_3():
     pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-LR.csv")
 
     #2. SVR regression
-    #TODO: Tune hyperparameters
     svr_model = SVR()
     svr_model.fit(train_X, train_Y)
 
@@ -67,7 +66,6 @@ def part_3():
     pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_3/ForecastTemplate3-SVR.csv")
 
     #3. ANN regression
-    #TODO: Tune hyperparameters
     neural_network = MLPRegressor(hidden_layer_sizes=(30, 30), max_iter=1000, activation='relu', random_state=RND_SEED)
     neural_network.fit(train_X, train_Y)
 
