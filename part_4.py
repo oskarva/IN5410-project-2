@@ -1,9 +1,62 @@
 import numpy as np
+from math import exp
 
 """
 For this part, we decided to make a neural network class.
 The class will be able to have an adjustable number of layers and nodes in all layers except the output layer.
 """
+# part 4a calculates the equations calculated manually in the maths section of the exercise
+def part_4a():
+    def sigmoid(x):
+        return 1 / (1 + exp(-x))
+
+    # Define initial variables
+    variables = {
+        'x1': 0.04, 'x2': 0.2, 'y': 0.5,
+        'w1': 0.11, 'w2': 0.22, 'w3': 0.33, 'w4': 0.44, 'w5': 0.55, 'w6': 0.66
+    }
+
+    # Calculate h1, h2, and yo
+    h = [sigmoid(variables['w1']*variables['x1'] + variables['w2']*variables['x2']),
+        sigmoid(variables['w3']*variables['x1'] + variables['w4']*variables['x2'])]
+    yo = sigmoid(variables['w5']*h[0] + variables['w6']*h[1])
+
+    # Calculate mse
+    mse = 0.5 * (variables['y'] - yo)**2
+
+    # Calculate derivatives and new weights
+    dedw = [
+        (yo - variables['y']) * yo * (1 - yo) * variables['w5'] * h[0] * (1 - h[0]) * variables['x1'],
+        (yo - variables['y']) * yo * (1 - yo) * variables['w5'] * h[0] * (1 - h[0]) * variables['x2'],
+        (yo - variables['y']) * yo * (1 - yo) * variables['w6'] * h[1] * (1 - h[1]) * variables['x1'],
+        (yo - variables['y']) * yo * (1 - yo) * variables['w6'] * h[1] * (1 - h[1]) * variables['x2'],
+        (yo - variables['y']) * yo * (1 - yo) * h[0],
+        (yo - variables['y']) * yo * (1 - yo) * h[1]
+    ]
+
+    alpha = 0.4
+    new_weights = [variables['w1'] - alpha * dedw[0], variables['w2'] - alpha * dedw[1],
+                variables['w3'] - alpha * dedw[2], variables['w4'] - alpha * dedw[3],
+                variables['w5'] - alpha * dedw[4], variables['w6'] - alpha * dedw[5]]
+
+    # Calculate h1n and h2n
+    hn = [sigmoid(new_weights[0]*variables['x1'] + new_weights[1]*variables['x2']),
+        sigmoid(new_weights[2]*variables['x1'] + new_weights[3]*variables['x2'])]
+
+    # Calculate yon and msen
+    yon = sigmoid(new_weights[4]*hn[0] + new_weights[5]*hn[1])
+    msen = 0.5 * (variables['y'] - yon)**2
+    
+    # Print results
+    for key, value in variables.items():
+        print(f"{key} = {value}")
+
+    print(f"h1 = {h[0]}\nh2 = {h[1]}\nyo = {yo}\nmse = {mse}")
+    print(f"dedw1 = {dedw[0]}\ndedw2 = {dedw[1]}\ndedw3 = {dedw[2]}\ndedw4 = {dedw[3]}\ndedw5 = {dedw[4]}\ndedw6 = {dedw[5]}")
+    print(f"w1n = {new_weights[0]}\nw2n = {new_weights[1]}\nw3n = {new_weights[2]}\nw4n = {new_weights[3]}\nw5n = {new_weights[4]}\nw6n = {new_weights[5]}")
+    print(f"h1n = {hn[0]}\nh2n = {hn[1]}\nyon = {yon}\nmsen = {msen}")
+    
+    
 
 def part_4():
     train_X = [
@@ -116,4 +169,5 @@ class NN_layer:
 
 
 if __name__ == "__main__":
+    part_4a()
     part_4()
