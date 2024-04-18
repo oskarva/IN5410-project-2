@@ -79,8 +79,7 @@ def part_3():
     #4. RNN regression
     simple_rnn = Sequential(
         [ #Setting up the layers
-            Dense(1), #input layer
-            SimpleRNN(20, activation='relu', input_shape=(1, 1)), #RNN hidden layer
+            SimpleRNN(20, activation='relu', input_shape=(WINDOW_SIZE, 1)), #RNN layer
             Dense(1), #output layer
         ]
 
@@ -92,7 +91,7 @@ def part_3():
     )
 
     #Reshape the data
-    train_X = train_X.values.reshape(-1, 1, 1)
+    train_X = train_X.values.reshape(-1, WINDOW_SIZE, 1)
     
     history = simple_rnn.fit(
         train_X, train_Y,
