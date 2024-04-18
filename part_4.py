@@ -104,13 +104,11 @@ class NN_layer:
             error = - Y + self.output[0]
             nodeNumber = 0 #only one node in output layer
             for j in range(len(self._weights[nodeNumber])):
-                #TODO: Minus or plus below?
                 self._weights[nodeNumber][j] -= learning_rate * (error * self.output[0] * (1 - self.output[0]) * prev_or_next_layer.output[j])
         else:
             error = - Y + prev_or_next_layer.output[0]
             for i in range(self._nodes):
                 for j in range(len(self._weights[i])):
-                    #TODO: Minus or plus below?
                     self._weights[i][j] -= learning_rate * (error * prev_or_next_layer.output[0] * (1 - prev_or_next_layer.output[0]) * prev_or_next_layer._weights[0][i] * self.output[i] * (1 - self.output[i]) * X[j])
     
     def activation(self, x):
