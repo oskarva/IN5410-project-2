@@ -4,7 +4,7 @@ from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import root_mean_squared_error
 import matplotlib.pyplot as plt
-from tensorflow.keras.layers import SimpleRNN, Dense, LSTM
+from tensorflow.keras.layers import SimpleRNN, Dense, LSTM, RNN
 from tensorflow.keras.models import Sequential 
 import numpy as np
 
@@ -80,7 +80,7 @@ def part_3():
     simple_rnn = Sequential(
         [ #Setting up the layers
             Dense(1), #input layer
-            LSTM(20, activation='relu', input_shape=(1, 1)),
+            SimpleRNN(20, activation='relu', input_shape=(1, 1)), #RNN hidden layer
             Dense(1), #output layer
         ]
 
