@@ -5,6 +5,8 @@ from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import root_mean_squared_error
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import numpy as np
 
 #Training data = TrainData.csv, ONLY 10m above ground level
 #relationship between generation and wind speed
@@ -37,7 +39,7 @@ def part_1():
     pd.DataFrame(predictions, index=test_X.index, columns=['POWER']).to_csv("out/part_1/ForecastTemplate1-LR.csv")
 
     #2. KNN regression
-    knn_model = KNeighborsRegressor(n_neighbors=5)
+    knn_model = KNeighborsRegressor(n_neighbors=int(np.sqrt(len(train_X))))
     knn_model.fit(train_X, train_Y)
 
     predictions = knn_model.predict(test_X)
@@ -59,7 +61,7 @@ def part_1():
 
     #4. Neural network regression
     #TODO: Tune hyperparameters
-    neural_network = MLPRegressor(hidden_layer_sizes=(30, 30), max_iter=1000, activation='relu', random_state=rnd_seed)
+    neural_network = MLPRegressor(hidden_layer_sizes=(100,100), max_iter=10000, activation='relu', random_state=rnd_seed)
     neural_network.fit(train_X, train_Y)
 
     predictions = neural_network.predict(test_X)
@@ -86,41 +88,61 @@ def part_1():
 
     # Linear Regression
     plt.subplot(2, 2, 1)
-    plt.plot(test_X.index, test_Y, label='True')
-    plt.plot(test_X.index, lin_reg_model.predict(test_X), label='Linear Regression')
-    plt.xlabel('Date')
-    plt.ylabel('Wind Energy')
+    plt.plot(pd.to_datetime(test_X.index), test_Y, label='Real Data')
+    plt.plot(pd.to_datetime(test_X.index), lin_reg_model.predict(test_X), label='Linear Regression')
+    plt.xlabel('Date (dd-mm)')
+    plt.ylabel('Wind Power')
     plt.title('Linear Regression')
     plt.legend()
+    plt.tight_layout()    
+        # Set x-axis ticks to be at the beginning of each day
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=2))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))
+    plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
 
     # KNN Regression
     plt.subplot(2, 2, 2)
-    plt.plot(test_X.index, test_Y, label='True')
-    plt.plot(test_X.index, knn_model.predict(test_X), label='KNN')
-    plt.xlabel('Date')
-    plt.ylabel('Wind Energy')
-    plt.title('KNN Regression')
+    plt.plot(pd.to_datetime(test_X.index), test_Y, label='Real Data')
+    plt.plot(pd.to_datetime(test_X.index), knn_model.predict(test_X), label='KNN')
+    plt.xlabel('Date (dd-mm)')
+    plt.ylabel('Wind Power')
+    plt.title('KNN')
     plt.legend()
-
+    plt.tight_layout()
+        # Set x-axis ticks to be at the beginning of each day
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=2))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))
+    plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+    plt.tight_layout()    
     # SVR Regression
     plt.subplot(2, 2, 3)
-    plt.plot(test_X.index, test_Y, label='True')
-    plt.plot(test_X.index, svr_model.predict(test_X), label='SVR')
-    plt.xlabel('Date')
-    plt.ylabel('Wind Energy')
-    plt.title('SVR Regression')
+    plt.plot(pd.to_datetime(test_X.index), test_Y, label='Real Data')
+    plt.plot(pd.to_datetime(test_X.index), svr_model.predict(test_X), label='SVR')
+    plt.xlabel('Date (dd-mm)')
+    plt.ylabel('Wind Power')
+    plt.title('SVR')
     plt.legend()
-
+    plt.tight_layout()
+        # Set x-axis ticks to be at the beginning of each day
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=2))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))
+    plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+    
     # Neural Network Regression
     plt.subplot(2, 2, 4)
-    plt.plot(test_X.index, test_Y, label='True')
-    plt.plot(test_X.index, neural_network.predict(test_X), label='Neural Network')
-    plt.xlabel('Date')
-    plt.ylabel('Wind Energy')
-    plt.title('Neural Network Regression')
+    plt.plot(pd.to_datetime(test_X.index), test_Y, label='Real Data')
+    plt.plot(pd.to_datetime(test_X.index), neural_network.predict(test_X), label='Neural Network')
+    plt.xlabel('Date (dd-mm)')
+    plt.ylabel('Wind Power')
+    plt.title('Neural Network')
     plt.legend()
 
     plt.tight_layout()
+    # Set x-axis ticks to be at the beginning of each day
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=2))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))
+    plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+    plt.savefig("out/part_1/part_1_plot.eps", transparent=False, bbox_inches='tight')
     plt.show()
 
 if __name__ == "__main__":
