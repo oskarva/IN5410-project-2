@@ -152,6 +152,7 @@ def plot_time_series(dates, real_data, predictions1, predictions2, title_suffix)
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))
     plt.xticks(rotation=45)
     plt.tight_layout()
+    plt.savefig(f'out/part_3/{title_suffix}.png')
     plt.show()
 
 if __name__ == "__main__":
